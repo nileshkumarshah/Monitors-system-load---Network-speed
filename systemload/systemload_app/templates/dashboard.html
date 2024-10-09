@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>System Monitor Dashboard</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+        }
+        h1 {
+            text-align: center;
+        }
+        .dashboard {
+            display: flex;
+            justify-content: space-around;
+        }
+        .dashboard div {
+            border: 1px solid #ddd;
+            padding: 20px;
+            width: 30%;
+            text-align: center;
+        }
+        .stat {
+            font-size: 24px;
+            margin: 10px 0;
+        }
+    </style>
+</head>
+<body>
+
+<h1>System Monitor Dashboard</h1>
+
+<div class="dashboard">
+    <div style=" background-color: red;">
+        <h2>CPU Load</h2>
+        <div class="stat">{{ cpu_load }}%</div>
+    </div>
+
+    <div style=" background-color: #2596be;">
+        <h2>Memory Usage</h2>
+        <div class="stat">{{ memory.percent }}% Used</div>
+        <p>Total: {{ memory.total|floatformat:2 }} GB</p>
+        <p>Available: {{ memory.available|floatformat:2 }} GB</p>
+    </div>
+
+    <div style=" background-color: #585141;">
+        <h2>Network Speed</h2>
+        <div class="stat">Download: {{ network_speed.download_mbps }} Mbps</div>
+        <div class="stat">Upload: {{ network_speed.upload_mbps }} Mbps</div>
+    </div>
+</div>
+
+<div>
+    <h2>CPU Load Over Time</h2>
+    <canvas id="cpuLoadChart"></canvas>
+</div>
+
+
+</body>
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+<script>
+    var ctx = document.getElementById('cpuLoadChart').getContext('2d');
+    var cpuLoadChart = new Chart(ctx, {
+        type: 'line',
+        data: {
+            labels: ['T-4s', 'T-3s', 'T-2s', 'T-1s', 'Now'],
+            datasets: [{
+                label: 'CPU Load (%)',
+                data: [20, 30, 25, 40, {{ cpu_load }}],
+                borderColor: 'rgba(75, 192, 192, 1)',
+                borderWidth: 1,
+                fill: false
+            }]
+        },
+        options: {
+            scales: {
+                y: {
+                    beginAtZero: true
+                }
+            }
+        }
+    });
+</script>
+
+
+</html>
